@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Page</title>
+    <!-- Use a simple Bootstrap 5 CDN for basic styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
+        rel="stylesheet" crossorigin="anonymous"
+        xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" >
+    
+    <!-- Simple custom styles for centering, spacing, and a clean look -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem 0;
+        }
+        .signup-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 2.5rem;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #198754; /* Green focus color */
+        }
+        .btn-success {
+            background-color: #198754;
+            border-color: #198754;
+            border-radius: 8px;
+            transition: transform 0.2s ease-in-out;
+        }
+        .btn-success:hover {
+            background-color: #157347;
+            border-color: #146c43;
+            transform: translateY(-2px);
+        }
+        .alert {
+            margin-top: 1rem;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="signup-container">
+    <h3 class="mb-4 text-center">Sign Up</h3>
+    <form id="signUpForm">
+        <div class="mb-3">
+            <label for="name" class="form-label">Full Name</label>
+            <input type="text" class="form-control rounded-3" id="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control rounded-3" id="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control rounded-3" id="password" required>
+        </div>
+        <div class="mb-4">
+            <label for="confirmPassword" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control rounded-3" id="confirmPassword" required>
+        </div>
+        
+        <!-- Placeholder for displaying success and error messages -->
+        <div id="message" class="alert d-none" role="alert"></div>
+
+        <button type="submit" class="btn btn-success w-100">Sign Up</button>
+    </form>
+</div>
+
+<script>
+    // Get form and message elements from the DOM
+    const form = document.getElementById('signUpForm');
+    const messageDiv = document.getElementById('message');
+
+    // Add a submit event listener to the form
+    form.addEventListener('submit', async (event) => {
+        // Prevent the default form submission behavior (page reload)
+        event.preventDefault();
+
+        // Hide any previous messages
+        messageDiv.classList.add('d-none');
+        messageDiv.textContent = '';
+        messageDiv.classList.remove('alert-success', 'alert-danger');
+
+        // Get values from the input fields
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        // Step 1: Validate if the passwords match
+        if (password !== confirmPassword) {
+            messageDiv.textContent = 'Passwords do not match. Please try again.';
+            messageDiv.classList.add('alert-danger');
+            messageDiv.classList.remove('d-none');
+            return; // Stop execution if validation fails
+        }
+
+        // Create the data payload for the API request
+        const payload = { name, email, password };
+        // Define the URL for your backend API endpoint
+        const backendApiUrl = 'http://127.0.0.1:3000/auth/register';
+
+        try {
+            // Step 2: Make a POST request to the backend API using the Fetch API
+            const response = await fetch(backendApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            // Step 3: Check if the response was successful (HTTP status 2xx)
+            if (response.ok) {
+                // Success: Display success message and then redirect
+                messageDiv.textContent = 'Account created successfully! Redirecting to Login Page...';
+                messageDiv.classList.add('alert-success');
+                messageDiv.classList.remove('d-none');
+                
+                // Redirect after a short delay (3 seconds)
+                setTimeout(_ => window.location.href = '/sign-in.view.html', 3000);
+            } else {
+                // Failure: Read error from response and display it
+                const errorData = await response.json();
+                messageDiv.textContent = errorData.message || 'An unexpected error occurred during Registration.';
+                messageDiv.classList.add('alert-danger');
+                messageDiv.classList.remove('d-none');
+            }
+        } catch (error) {
+            // Catch network errors (e.g., API is down)
+            console.error('Network or API error:', error);
+            messageDiv.textContent = 'Could not connect to the server. Please check your connection.';
+            messageDiv.classList.add('alert-danger');
+            messageDiv.classList.remove('d-none');
+        }
+    });
+</script>
+
+</body>
+</html>
