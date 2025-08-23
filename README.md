@@ -10,7 +10,7 @@ Create Quick Three simple HTML Views:
  - Registration Page: Able User to Make Register new User Process
  - Welcome Page: Just Display Authorized User's name After completed Login 
 
-**Important Note:** Task Original Need to create these above Views using ReactJs or VueJs Framework, But Time not give me to learn one of them and complete the Task, Almost Three View had been Generated Bu Gimini AI
+**Important Note:** Task Original Need to create these above Views using ReactJs or VueJs Framework, But Time not give me to learn one of them and complete the Task, Almost Three View had been Generated Bu Gemini AI
 
 -----
 ### How to Run with Docker
